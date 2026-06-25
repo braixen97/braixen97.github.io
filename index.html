@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elo Tournament</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;background-image:radial-gradient(rgba(255,255,255,0.015) 1px,transparent 1px);background-size:24px 24px}
+.hd{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:16px;text-align:center;border-bottom:2px solid #2a2a4a}
+.hd h1{color:#F1C40F;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px}
+.hd .s{color:#888;font-size:.8rem;margin-top:4px;font-weight:400}
+.c{max-width:920px;margin:0 auto;padding:10px}
+.ct{overflow-x:auto;border-radius:10px;border:1px solid #2a2a4a;background:#111120;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+table{width:100%;border-collapse:collapse;min-width:580px}
+th{padding:8px;text-align:left;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:#666;border-bottom:1px solid #2a2a4a;cursor:pointer;user-select:none;font-weight:600;position:sticky;top:0;background:#111120}
+th:hover{color:#F1C40F}
+td{padding:7px 8px;border-bottom:1px solid #1a1a2e;font-size:.82rem}
+tr{transition:background .15s ease}
+tr:hover td{background:rgba(52,152,219,0.06)}
+tr:nth-child(even) td{background:rgba(255,255,255,0.015)}
+tr:nth-child(even):hover td{background:rgba(52,152,219,0.08)}
+.rn{width:32px;text-align:center;color:#555;font-weight:600;font-size:.75rem}
+.rk{width:120px}
+.nm{font-weight:600;cursor:pointer;color:#3498DB}
+.nm:hover{color:#F1C40F}
+.el{font-weight:700;font-size:.9rem;white-space:nowrap}
+.wr{color:#2ECC71;font-weight:500}
+.rc{color:#aaa;font-weight:500}
+.tier{display:inline-flex;align-items:center;gap:3px;padding:2px 8px 2px 6px;border-radius:4px;font-size:.62rem;font-weight:700;color:#fff;white-space:nowrap}
+.tier svg{flex-shrink:0}
+.ch{font-size:.65rem;font-weight:700;margin-left:5px;vertical-align:middle}
+.ch.up{color:#2ECC71}
+.ch.dn{color:#E74C3C}
+.sb{font-size:.8rem;margin-left:3px;cursor:help}
+.bs{font-size:.7rem;margin-left:2px;cursor:help;display:inline-block;animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:1}50%{opacity:.5}}
+.l5{font-family:'Inter',monospace;letter-spacing:2px;font-size:.75rem;font-weight:600}
+.fs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;padding:12px;background:#111120;border-radius:10px;border:1px solid #2a2a4a}
+.fsi{text-align:center;padding:4px 12px}
+.fsv{font-size:1.1rem;font-weight:800;color:#F1C40F;display:block}
+.fsl{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-top:2px}
+.ft{text-align:center;padding:16px;color:#444;font-size:.7rem;margin-top:10px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;padding:16px;overflow-y:auto;animation:fadeIn .2s ease}
+.modal.a{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mw{max-width:500px;margin:20px auto;background:#1a1a2e;border-radius:14px;border:1px solid #2a2a4a;padding:20px;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.mh h2{font-size:1.2rem;font-weight:700}.mc{cursor:pointer;color:#e74c3c;font-size:1.5rem;transition:transform .2s;line-height:1}
+.mc:hover{transform:scale(1.2)}
+.eb{font-size:2.2rem;font-weight:800;margin:8px 0}
+.rl{color:#888;font-size:.85rem;font-weight:500}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0}
+.sc{background:#111120;padding:8px;border-radius:8px;text-align:center;transition:transform .15s}
+.sc .v{font-size:1.2rem;font-weight:700}.sc .l{font-size:.62rem;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.cw{background:#0a0a15;border-radius:8px;padding:10px;margin:8px 0}
+.cw svg{width:100%;height:70px;display:block}
+.hl{margin-top:10px}
+.hi{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid #1a1a30;font-size:.75rem;flex-wrap:wrap;transition:background .15s}
+.hi:hover{background:rgba(255,255,255,0.03)}
+.hi .ht{color:#555;min-width:120px;font-family:monospace;font-size:.7rem}
+.hi .he{color:#F1C40F;font-weight:600;white-space:nowrap}
+@media(max-width:640px){
+.c{padding:4px}
+.ct{border-radius:0;border-left:none;border-right:none}
+table{min-width:auto}
+th,td{padding:5px 4px;font-size:.72rem}
+.rk{width:80px}
+.tier{font-size:.55rem;padding:1px 4px}
+.tier svg{width:10px;height:10px}
+.el{font-size:.8rem}
+.ch{font-size:.55rem}
+.fs{gap:4px;padding:8px}
+.fsi{padding:2px 8px}
+.fsv{font-size:.9rem}
+.eb{font-size:1.6rem}
+.hi .ht{min-width:80px}
+/* cards view */
+table,thead,tbody,th,td,tr{display:block}
+thead tr{position:absolute;top:-9999px;left:-9999px}
+tr{padding:10px 8px;border-bottom:1px solid #2a2a4a;position:relative;margin:4px 0;background:#111120;border-radius:8px;border:1px solid #2a2a4a;cursor:pointer}
+tr:hover td{background:transparent}
+tr:nth-child(even) td{background:transparent}
+td{display:inline-block;border:none;padding:2px 4px;font-size:.8rem;vertical-align:middle}
+td.rn{width:auto;display:inline-block;font-size:.65rem;margin-right:4px}
+td.rk{width:auto;display:inline-block}
+td.nm{display:block;font-size:.85rem;margin-top:4px}
+td.el{display:inline-block}
+td.wr{display:inline-block}
+td.rc{display:inline-block}
+td.l5{display:block;margin-top:6px;font-size:.7rem;text-align:left}
+}
+</style>
+<div class="hd"><h1>Elo Tournament</h1><div class="s">7 jugadores · 16 partidas · 25/06/2026</div></div>
+<div class="c">
+<div class="ct">
+<table id="t">
+<thead><tr>
+<th onclick="sort(1)">#</th>
+<th onclick="sort(2)">Rango</th>
+<th onclick="sort(3)">Nombre</th>
+<th onclick="sort(4)">ELO</th>
+<th onclick="sort(5)">Win%</th>
+<th onclick="sort(6)">Récord</th>
+<th>Last5</th>
+</tr></thead>
+<tbody><tr onclick="show(0)"><td class="rn">1</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #3498DB, #1A5276)"><svg viewBox="0 0 12 12" width="14" height="14"><polygon points="6,1 11,6 6,11 1,6" fill="#3498DB"/></svg>Diamond I</span></td><td class="nm">jhonatancrack</td><td class="el">1381<span class="ch up" title="Subio 1 puesto(s)">+1</span></td><td class="wr">80.0%</td><td class="rc">4-1</td><td class="l5">DWLWW</td></tr><tr onclick="show(1)"><td class="rn">2</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #2ECC71, #1E8449)"><svg viewBox="0 0 12 12" width="14" height="14"><circle cx="6" cy="6" r="5" fill="#2ECC71"/></svg>Emerald III</span></td><td class="nm">BrandonPHerbo</td><td class="el">1300<span class="ch up" title="Subio 2 puesto(s)">+2</span></td><td class="wr">100.0%</td><td class="rc">1-0</td><td class="l5">----W</td></tr><tr onclick="show(2)"><td class="rn">3</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #1ABC9C, #0E6655)"><svg viewBox="0 0 12 12" width="14" height="14"><polygon points="6,1 10.5,3.75 10.5,8.25 6,11 1.5,8.25 1.5,3.75" fill="#1ABC9C"/></svg>Platinum III</span></td><td class="nm">Aloee23</td><td class="el">1290<span class="ch dn" title="Bajo 2 puesto(s)">-2</span></td><td class="wr">66.7%</td><td class="rc">4-2</td><td class="l5">WWDWL</td></tr><tr onclick="show(3)"><td class="rn">4</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #F1C40F, #B7950B)"><svg viewBox="0 0 12 12" width="14" height="14"><rect x="2" y="2" width="8" height="8" rx="1" fill="#F1C40F"/></svg>Gold II</span></td><td class="nm">.Jugodefruutilla</td><td class="el">1272<span class="ch dn" title="Bajo 1 puesto(s)">-1</span></td><td class="wr">100.0%</td><td class="rc">1-0</td><td class="l5">----W</td></tr><tr onclick="show(4)"><td class="rn">5</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #F1C40F, #B7950B)"><svg viewBox="0 0 12 12" width="14" height="14"><rect x="2" y="2" width="8" height="8" rx="1" fill="#F1C40F"/></svg>Gold IV</span></td><td class="nm">braixen97<span class="bs" title="Bonoloto!">⭐</span></td><td class="el">1178</td><td class="wr">25.0%</td><td class="rc">2-6</td><td class="l5">LLLWW</td></tr><tr onclick="show(5)"><td class="rn">6</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #95A5A6, #5D6D7E)"><svg viewBox="0 0 12 12" width="14" height="14"><polygon points="6,1.5 10.5,9 1.5,9" fill="#95A5A6"/></svg>Silver III</span></td><td class="nm">Kirbinito7<span class="bs" title="Bonoloto!">⭐</span></td><td class="el">1110</td><td class="wr">33.3%</td><td class="rc">1-2</td><td class="l5">--WLL</td></tr><tr onclick="show(6)"><td class="rn">7</td><td class="rk"><span class="tier" style="background:linear-gradient(135deg, #CD7F32, #8B4513)"><svg viewBox="0 0 12 12" width="14" height="14"><circle cx="6" cy="6" r="4.5" fill="none" stroke="#CD7F32" stroke-width="1.5"/></svg>Bronze II</span></td><td class="nm">LUIS4TR5<span class="bs" title="Bonoloto!">⭐</span></td><td class="el">844</td><td class="wr">0.0%</td><td class="rc">0-5</td><td class="l5">LLLLL</td></tr></tbody>
+</table>
+</div>
+<div class="fs"><div class="fsi"><span class="fsv">7</span><span class="fsl">Jugadores</span></div><div class="fsi"><span class="fsv">16</span><span class="fsl">Partidas</span></div><div class="fsi"><span class="fsv">1196</span><span class="fsl">ELO Prom</span></div><div class="fsi"><span class="fsv">1381</span><span class="fsl">Max ELO</span></div><div class="fsi"><span class="fsv">844</span><span class="fsl">Min ELO</span></div><div class="fsi"><span class="fsv">9</span><span class="fsl">+ Partidas</span></div><div class="fsi"><span class="fsv">2</span><span class="fsl">Mejor Racha (jhonatancrack)</span></div></div>
+</div>
+<div class="ft">Generado el 25/06/2026</div>
+<div class="modal" id="m" onclick="if(event.target===this)c()"><div class="mw">
+<div class="mh"><h2 id="mn"></h2><span class="mc" onclick="c()">&times;</span></div>
+<div class="rl" id="mr"></div><div class="eb" id="me"></div>
+<div class="sg" id="ms"></div>
+<div class="cw"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline id="mp" fill="none" stroke="#F1C40F" stroke-width=".8"/></svg></div>
+<div class="hl" id="mh"></div></div></div>
+<script>
+var pd=[{"n": "jhonatancrack", "r": "Diamond I", "e": 1381, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-25 15:21:53</span><span>Victoria vs Aloee23, LUIS4TR5</span><span class=\"he\">1258 → 1381</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:15:44</span><span>Victoria vs LUIS4TR5</span><span class=\"he\">1223 → 1258</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:11:41</span><span>Derrota vs Aloee23</span><span class=\"he\">1320 → 1223</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:07:41</span><span>Victoria vs LUIS4TR5</span><span class=\"he\">1292 → 1320</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:03:08</span><span>Empate vs Aloee23</span><span class=\"he\">1267 → 1292</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 14:54:21</span><span>Bonoloto! +13 LP</span><span class=\"he\">1254 → 1267</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 14:54:21</span><span>Victoria vs LUIS4TR5</span><span class=\"he\">1200 → 1254</span></div>", "c": "0.0,80.4 16.7,72.2 33.3,56.3 50.0,38.6 66.7,100.0 83.3,77.8 100.0,0.0", "w": 4, "l": 1, "d": 1, "mi": 1223, "mx": 1381}, {"n": "BrandonPHerbo", "r": "Emerald III", "e": 1300, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-24 09:23:00</span><span>Victoria vs braixen97</span><span class=\"he\">1200 → 1300</span></div>", "c": "0.0,100.0", "w": 1, "l": 0, "d": 0, "mi": 1300, "mx": 1300}, {"n": "Aloee23", "r": "Platinum III", "e": 1290, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-25 15:21:53</span><span>Derrota vs braixen97, jhonatancrack</span><span class=\"he\">1427 → 1290</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:11:41</span><span>Victoria vs jhonatancrack</span><span class=\"he\">1330 → 1427</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:03:08</span><span>Empate vs jhonatancrack</span><span class=\"he\">1355 → 1330</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 11:02:33</span><span>Bonoloto! +13 LP</span><span class=\"he\">1342 → 1355</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 11:02:33</span><span>Victoria vs Kirbinito7</span><span class=\"he\">1273 → 1342</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 10:52:48</span><span>Victoria vs Kirbinito7</span><span class=\"he\">1124 → 1273</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 10:39:50</span><span>Derrota vs Kirbinito7</span><span class=\"he\">1233 → 1124</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 09:58:55</span><span>Victoria vs braixen97</span><span class=\"he\">1200 → 1233</span></div>", "c": "0.0,64.0 14.3,100.0 28.6,50.8 42.9,28.1 57.1,23.8 71.4,32.0 85.7,0.0 100.0,45.2", "w": 4, "l": 2, "d": 1, "mi": 1124, "mx": 1427}, {"n": ".Jugodefruutilla", "r": "Gold II", "e": 1272, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-24 10:49:06</span><span>Victoria vs braixen97</span><span class=\"he\">1200 → 1272</span></div>", "c": "0.0,100.0", "w": 1, "l": 0, "d": 0, "mi": 1272, "mx": 1272}, {"n": "braixen97", "r": "Gold IV", "e": 1178, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-25 15:21:53</span><span>Bonoloto! +19 LP</span><span class=\"he\">1159 → 1178</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:21:53</span><span>Victoria vs Aloee23, LUIS4TR5</span><span class=\"he\">1056 → 1159</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 14:44:21</span><span>Victoria vs LUIS4TR5</span><span class=\"he\">884 → 1056</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 09:58:55</span><span>Derrota vs Aloee23</span><span class=\"he\">917 → 884</span></div><div class=\"hi\"><span class=\"ht\">2026-06-24 11:36:52</span><span>Derrota vs el_melus</span><span class=\"he\">941 → 917</span></div><div class=\"hi\"><span class=\"ht\">2026-06-24 11:30:39</span><span>Derrota vs el_melus</span><span class=\"he\">974 → 941</span></div><div class=\"hi\"><span class=\"ht\">2026-06-24 11:25:18</span><span>Derrota vs el_melus</span><span class=\"he\">1028 → 974</span></div><div class=\"hi\"><span class=\"ht\">2026-06-24 10:49:06</span><span>Derrota vs .Jugodefruutilla</span><span class=\"he\">1100 → 1028</span></div><div class=\"hi\"><span class=\"ht\">2026-06-24 09:23:00</span><span>Derrota vs BrandonPHerbo</span><span class=\"he\">1200 → 1100</span></div>", "c": "0.0,26.5 12.5,51.0 25.0,69.4 37.5,80.6 50.0,88.8 62.5,100.0 75.0,41.5 87.5,6.5 100.0,0.0", "w": 2, "l": 6, "d": 0, "mi": 884, "mx": 1178}, {"n": "Kirbinito7", "r": "Silver III", "e": 1110, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-25 11:02:33</span><span>Bonoloto! perdón -19 LP</span><span class=\"he\">1091 → 1110</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 11:02:33</span><span>Derrota vs Aloee23</span><span class=\"he\">1160 → 1091</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 10:52:48</span><span>Derrota vs Aloee23</span><span class=\"he\">1309 → 1160</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 10:39:50</span><span>Victoria vs Aloee23</span><span class=\"he\">1200 → 1309</span></div>", "c": "0.0,0.0 33.3,68.3 66.7,100.0 100.0,91.3", "w": 1, "l": 2, "d": 0, "mi": 1091, "mx": 1309}, {"n": "LUIS4TR5", "r": "Bronze II", "e": 844, "h": "<div class=\"hi\"><span class=\"ht\">2026-06-25 15:21:53</span><span>Derrota vs braixen97, jhonatancrack</span><span class=\"he\">933 → 844</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:15:44</span><span>Bonoloto! perdón -17 LP</span><span class=\"he\">916 → 933</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:15:44</span><span>Derrota vs jhonatancrack</span><span class=\"he\">951 → 916</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:07:41</span><span>Bonoloto! perdón -5 LP</span><span class=\"he\">946 → 951</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 15:07:41</span><span>Derrota vs jhonatancrack</span><span class=\"he\">974 → 946</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 14:54:21</span><span>Derrota vs jhonatancrack</span><span class=\"he\">1028 → 974</span></div><div class=\"hi\"><span class=\"ht\">2026-06-25 14:44:21</span><span>Derrota vs braixen97</span><span class=\"he\">1200 → 1028</span></div>", "c": "0.0,0.0 16.7,29.3 33.3,44.6 50.0,41.8 66.7,60.9 83.3,51.6 100.0,100.0", "w": 0, "l": 5, "d": 0, "mi": 844, "mx": 1028}];
+function show(i){var p=pd[i];if(!p)return;var mn=document.getElementById("mn");mn.textContent=p.n;document.getElementById("mr").textContent=p.r;document.getElementById("me").textContent=p.e;var den=p.w+p.l;document.getElementById("ms").innerHTML='<div class="sc"><div class="v" style="color:#2ECC71">'+p.w+'</div><div class="l">Victorias</div></div><div class="sc"><div class="v" style="color:#E74C3C">'+p.l+'</div><div class="l">Derrotas</div></div><div class="sc"><div class="v">'+(den>0?(100*p.w/den).toFixed(1)+"%":"0.0%")+'</div><div class="l">Win%</div></div><div class="sc"><div class="v">'+p.d+'</div><div class="l">Empates</div></div>';document.getElementById("mp").setAttribute("points",p.c);document.getElementById("mh").innerHTML=p.h;document.getElementById("m").classList.add("a");document.body.style.overflow='hidden'}
+function c(){document.getElementById("m").classList.remove("a");document.body.style.overflow=''}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")c()});
+var st=1;
+function sort(c){var t=document.getElementById("t"),b=Array.from(t.querySelectorAll("tbody tr")),h=t.querySelectorAll("th");h.forEach(function(x){x.style.color="#666"});h[c-1].style.color="#F1C40F";var d=[[function(a,b){return 0},function(a,b){return parseInt(a.cells[0].textContent)-parseInt(b.cells[0].textContent)}],[function(a,b){return 0},function(a,b){return a.cells[1].textContent.localeCompare(b.cells[1].textContent)}],[function(a,b){return 0},function(a,b){return a.cells[2].textContent.localeCompare(b.cells[2].textContent)}],[function(a,b){return 0},function(a,b){return parseInt(a.cells[3].textContent)-parseInt(b.cells[3].textContent)}],[function(a,b){return 0},function(a,b){var pa=parseFloat(a.cells[4].textContent),pb=parseFloat(b.cells[4].textContent);return pa-pb}],[function(a,b){return 0},function(a,b){return a.cells[5].textContent.localeCompare(b.cells[5].textContent)}]];var f=c<1||c>d.length?d[0][st]:d[c][st];b.sort(f);if(st===1)st=-1;else st=1;var tb=t.querySelector("tbody");tb.innerHTML='';b.forEach(function(r){tb.appendChild(r)})}
+</script></html>
